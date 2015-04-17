@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<h:form id="mainForm">
+			<div>
+				<table>
+					<tr>
+						<td>Path to your video:</td>
+						<td><h:inputText value="#{video.video.originalUrl}" alt="Path to your video" size="100"/></td>
+					</tr>
+					<tr>
+						<td>Video Format:</td>
+						<td>
+							<h:selectOneMenu>
+								<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
+									<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
+								</f:selectItems>
+							</h:selectOneMenu>
+						</td>
+					</tr>
+				</table>
+				<h:commandButton action="#{video.convertVideo}" value="Convert" />
+			</div>
+			<div>
+				<video width="800" height="600" autoplay="true" controls="true">
+					<source src="#{video.video.convertedUrl}" type="video/mp4">
+						Seu navegador não suporta HTML 5.
+					</source>
+				</video>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
