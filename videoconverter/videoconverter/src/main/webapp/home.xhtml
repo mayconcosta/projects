@@ -3,6 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
 	template="/WEB-INF/templates/default.xhtml">
 	<ui:define name="content">
 		<h:form id="mainForm">
@@ -10,27 +11,38 @@
 				<table>
 					<tr>
 						<td>Path to your video:</td>
-						<td><h:inputText value="#{video.video.originalUrl}" alt="Path to your video" size="100"/></td>
+						<td>
+							<p:inputText id="videoPath"
+										 value="#{video.video.sourceUrl}"
+										 alt="Path to your video" 
+										 size="100"
+										 required="true"
+										 requiredMessage="Enter the URL for the video that you want to convert"/>
+						</td>
 					</tr>
 					<tr>
 						<td>Video Format:</td>
 						<td>
-							<h:selectOneMenu>
+							<p:selectOneMenu id="videoFormat" required="true" requiredMessage="Select one format to convert your video">
 								<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
 									<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
 								</f:selectItems>
-							</h:selectOneMenu>
+							</p:selectOneMenu>
 						</td>
 					</tr>
 				</table>
-				<h:commandButton action="#{video.convertVideo}" value="Convert" />
+				<p:commandButton id="convertBtn"
+								 action="#{video.convertVideo}" 
+								 value="Convert"/>
 			</div>
 			<div>
-				<video width="800" height="600" autoplay="true" controls="true">
-					<source src="#{video.video.convertedUrl}" type="video/mp4">
-						Seu navegador não suporta HTML 5.
-					</source>
-				</video>
+				<h:panelGroup id="videoPlayer" layout="block" rendered="#{not empty video.video.convertedUrl}">
+					<video id="player" width="800" height="600" autoplay="true" controls="true">
+						<source src="#{video.video.convertedUrl}" type="video/mp4">
+							Seu navegador não suporta HTML 5.
+						</source>
+					</video>
+				</h:panelGroup>
 			</div>
 		</h:form>
 	</ui:define>
