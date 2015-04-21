@@ -5,3 +5,15 @@ body {
    font-family: Verdana, sans-serif;
    font-size: 0.9em;
 }
+
+fieldset {
+	margin-top: 20px;
+}
+
+.error {
+	color: red;
+}
+
+.info {
+	color: blue;
+}

@@ -9,17 +9,18 @@ public class Video {
 	private String sourceUrl;
 	private String convertedUrl;
 	private String id;
+	private String name;
 	
 	@NotEmpty
-	private VideoFormat format;
+	private VideoFormat format = VideoFormat.MP4;
 	
 	
 	public String getSourceUrl() {
 		return sourceUrl;
 	}
 
-	public void setSourcelUrl(String originalUrl) {
-		this.sourceUrl = originalUrl;
+	public void setSourceUrl(String sourceUrl) {
+		this.sourceUrl = sourceUrl;
 	}
 
 	public String getConvertedUrl() {
@@ -44,6 +45,14 @@ public class Video {
 	
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

@@ -5,37 +5,63 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	template="/WEB-INF/templates/default.xhtml">
+	
 	<ui:define name="content">
-		<h:form id="mainForm">
-			<div>
-				<table>
-					<tr>
-						<td>Path to your video:</td>
-						<td>
-							<p:inputText id="videoPath"
-										 value="#{video.video.sourceUrl}"
-										 alt="Path to your video" 
-										 size="100"
-										 required="true"
-										 requiredMessage="Enter the URL for the video that you want to convert"/>
-						</td>
-					</tr>
-					<tr>
-						<td>Video Format:</td>
-						<td>
-							<p:selectOneMenu id="videoFormat" required="true" requiredMessage="Select one format to convert your video">
-								<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
-									<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
-								</f:selectItems>
-							</p:selectOneMenu>
-						</td>
-					</tr>
-				</table>
-				<p:commandButton id="convertBtn"
-								 action="#{video.convertVideo}" 
-								 value="Convert"/>
-			</div>
-			<div>
+		<h:form id="mainForm" enctype="multipart/form-data" prependId="false">
+			<h:messages id="messages" errorClass="error" infoClass="info"/>
+			<fieldset>
+				<div>
+					<h:panelGrid columns="3">
+						<h:outputLabel value="File:" />
+						<h:inputFile value="#{video.file}" />
+						<h:commandButton id="uploadBtn" action="#{video.upload()}" value="Upload" />
+					</h:panelGrid>
+					
+					<h:panelGrid columns="5">
+						<h:outputLabel value="Path:" />
+						<h:inputText id="videoPath"
+									 value="#{video.video.sourceUrl}"
+									 alt="Path to your video" 
+									 size="60"
+									 required="true"
+									 requiredMessage="Enter the URL for the video that you want to convert"/>
+									 
+						<h:outputLabel value="Format:" />			 
+						<h:selectOneMenu id="videoFormat" required="true" requiredMessage="Select one format to convert your video">
+							<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
+								<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
+							</f:selectItems>
+						</h:selectOneMenu>
+						
+						<h:commandButton id="convertBtn"
+										 action="#{video.convertVideo}" 
+										 value="Convert"/>
+						
+					</h:panelGrid>
+				</div>
+			</fieldset>
+			
+			<fieldset style="margin-top: 20px">
+				<div>
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Source URL:"/>
+						<h:outputText value="#{video.video.sourceUrl}" />
+						
+						<h:outputLabel value="Converted URL:"/>
+						<h:outputText value="#{video.video.convertedUrl}" />
+						
+						<h:outputLabel value="Format:"/>
+						<h:outputText value="#{video.video.format.name}" />
+						
+						<h:outputLabel value="Job ID:"/>
+						<h:outputText value="#{video.video.id}" />
+					</h:panelGrid>
+					
+					<h:commandButton action="#{video.updateVideo()}" value="Update Video" />
+				</div>
+			</fieldset>
+			
+			<fieldset>
 				<h:panelGroup id="videoPlayer" layout="block" rendered="#{not empty video.video.convertedUrl}">
 					<video id="player" width="800" height="600" autoplay="true" controls="true">
 						<source src="#{video.video.convertedUrl}" type="video/mp4">
@@ -43,7 +69,7 @@
 						</source>
 					</video>
 				</h:panelGroup>
-			</div>
+			</fieldset>
 		</h:form>
 	</ui:define>
 </ui:composition>
