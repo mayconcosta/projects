@@ -21,7 +21,7 @@
 			
 		<h:form id="mainForm">
 			<p:messages id="messages" errorClass="error" infoClass="info"/>
-			<div class="panel">
+			<h:panelGroup id="fields" class="panel" layout="block">
 				<h:panelGrid>
 					<p:commandLink value="upload a file" onclick="PF('dialogUpload').show()"/>
 				</h:panelGrid>
@@ -31,21 +31,35 @@
 								 value="#{video.video.sourceUrl}"
 								 alt="Path to your video" 
 								 size="50"
-								 placeholder="Enter the video URL here"/>
+								 placeholder="Enter the video URL here"
+								 required="true"
+								 requiredMessage="Enter the video URL"/>
 					
 					<p:outputLabel value="Format:" />
 								 
-					<p:selectOneMenu id="videoFormat" required="true" requiredMessage="Select one format to convert your video">
-						<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
-							<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
+					<p:selectOneMenu id="videoFormat" 
+									 required="true" 
+									 requiredMessage="Select one format to convert your video"
+									 value="#{video.video.format}">
+									 
+						<f:selectItems id="formats" 
+									   value="#{video.videoFormatList}" 
+									   var="format"
+									   itemValue="#{format}"
+									   itemLabel="#{format.name}">
 						</f:selectItems>
 					</p:selectOneMenu>
 					
 					<p:commandButton id="convertBtn"
 									 action="#{video.convertVideo}" 
-									 value="Convert"/>
+									 value="Convert"
+									 process="@form"
+									 update="@form"
+									 onsuccess="PF('blockFields').show(); jQuery('#waitConvertionBox').css('display','block')"/>
 				</h:panelGrid>
-			</div>
+			</h:panelGroup>
+			
+			<p:blockUI block="fields" widgetVar="blockFields"/>
 			
 			<ui:remove>
 			<!-- This code is here for debuging purpose -->
@@ -68,21 +82,18 @@
 			</div>
 			</ui:remove>
 			
-			<h:panelGroup id="videoPlayer" 
-						  layout="block" 
-						  styleClass="panel">
-						  
-				<video id="player" autoplay="true" controls="true">
-				<!-- 
-					<source src="#{video.video.convertedUrl}" type="video/mp4">
-						Seu navegador não suporta HTML 5.
-					</source>
-				 -->	
-				 <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" type="video/mp4">
-						Seu navegador não suporta HTML 5.
-					</source>
-				</video>
-			</h:panelGroup>
+			<div id="waitConvertionBox" style="text-align:center; display:none; margin-top: 40px" >
+				<div style="display:block;">
+					Wait a moment while we are converting your video. It may take some minutes.
+				</div>
+				<div style="margin-top:20px;">
+					<h:graphicImage value="/resources/images/converting.gif" />
+				</div>
+				<div style="margin-top: 30px;">
+					<p:commandButton value="Cancel" action="#{video.cancelConversion()}" type="submit" ajax="false"/>
+				</div>
+			</div>
+			
 		</h:form>
 	</ui:define>
 </ui:composition>

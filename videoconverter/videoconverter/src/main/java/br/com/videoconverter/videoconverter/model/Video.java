@@ -1,19 +1,18 @@
 package br.com.videoconverter.videoconverter.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import java.io.Serializable;
 
 
-public class Video {
 
-	@NotEmpty
+public class Video implements Serializable {
+
+	private static final long serialVersionUID = 197173738576936784L;
+	
 	private String sourceUrl;
 	private String convertedUrl;
 	private String id;
 	private String name;
-	
-	@NotEmpty
 	private VideoFormat format = VideoFormat.MP4;
-	
 	
 	public String getSourceUrl() {
 		return sourceUrl;

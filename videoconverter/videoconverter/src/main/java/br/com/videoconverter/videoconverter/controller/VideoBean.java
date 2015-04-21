@@ -34,7 +34,7 @@ public class VideoBean implements Serializable {
 
 	public String convertVideo() {
 		this.setVideo(this.converterBO.convert(this.getVideo()));
-		return null;
+		return "player.faces?faces-redirect=true";
 	}
 
 	public String updateVideo() {
@@ -56,6 +56,15 @@ public class VideoBean implements Serializable {
 		}
 		return null;
 	}
+	
+	public String cancelConversion() {
+		try {
+			this.converterBO.cancelConversion(getVideo());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return this.reload();
+	}
 
 	public Part getFile() {
 		return file;
@@ -76,7 +85,7 @@ public class VideoBean implements Serializable {
 	public String reload() {
 		this.setVideo(new Video());
 		this.setFile(null);
-		return null;
+		return "home.faces?faces-redirect=true";
 	}
 	
 	private String getFileName(Part part) {

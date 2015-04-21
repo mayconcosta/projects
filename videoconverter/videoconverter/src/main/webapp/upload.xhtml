@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:form id="uploadForm" enctype="multipart/form-data" prependId="false">
+
+<div style="display: block;">
+	<h:panelGrid columns="2">
+		<h:inputFile id="file"
+					 value="#{video.file}" 
+					 label="Choose your file"
+					 onclick="jQuery('#waitMessageContent').css('display', 'none')"/>
+						
+		<h:commandButton id="uploadBtn" 
+						 value="Upload"
+						 action="#{video.upload()}">
+			<f:ajax event="click" 
+			 		execute="file"
+			 		render="@all"
+			 		onevent="jQuery('#waitMessageContent').css('display', 'block')"/>
+		</h:commandButton>				 
+						 
+	</h:panelGrid>
+	
+	<h:panelGroup id="waitMessageContent" layout="block" style="display:none">
+		<div style="text-align: center; margin-top: 50px;">
+			Wait a moment. We are uploading your file. 
+		</div>
+		<div style="margin: 10px auto; width:160px">
+			<h:graphicImage value="/resources/images/upload.gif" />
+		</div>
+	</h:panelGroup>
+</div>
+</h:form> 
+</ui:composition>
