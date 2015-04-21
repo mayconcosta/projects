@@ -1,6 +1,5 @@
 package br.com.videoconverter.videoconverter.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
@@ -9,9 +8,15 @@ import javax.inject.Named;
 import javax.servlet.http.Part;
 
 import br.com.videoconverter.videoconverter.bo.ConverterBO;
+import br.com.videoconverter.videoconverter.model.AmazonStorageService;
 import br.com.videoconverter.videoconverter.model.Video;
 import br.com.videoconverter.videoconverter.model.VideoFormat;
 
+/**
+ * Controlador para a tela de conversão de vídeos.
+ * @author maycon
+ *
+ */
 @Named(value = "video")
 @SessionScoped
 public class VideoBean implements Serializable {
@@ -20,6 +25,9 @@ public class VideoBean implements Serializable {
 
 	@Inject
 	private ConverterBO converterBO;
+	
+	@Inject
+	private AmazonStorageService amazonStorageService;
 
 	private Video video = new Video();
 	private Part file;
@@ -30,7 +38,8 @@ public class VideoBean implements Serializable {
 	}
 
 	public String updateVideo() {
-		this.getVideo().setConvertedUrl(this.converterBO.getConvertedUrl(this.getVideo()));
+		String convertedVideoUrl = this.converterBO.getConvertedUrl(this.getVideo());
+		this.getVideo().setConvertedUrl(convertedVideoUrl);
 		return null;
 	}
 
@@ -40,8 +49,9 @@ public class VideoBean implements Serializable {
 
 	public String upload() {
 		try {
-			String fileUrl = this.converterBO.storeFile(file.getInputStream(), file.getName());
-		} catch (IOException e) {
+			String fileUrl = this.amazonStorageService.storeFile(file.getInputStream(), this.getFileName(file));
+			this.getVideo().setSourceUrl(fileUrl);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -61,5 +71,22 @@ public class VideoBean implements Serializable {
 
 	public void setVideo(Video video) {
 		this.video = video;
+	}
+	
+	public String reload() {
+		this.setVideo(new Video());
+		this.setFile(null);
+		return null;
+	}
+	
+	private String getFileName(Part part) {
+		final String partHeader = part.getHeader("content-disposition");
+		for (String content : part.getHeader("content-disposition").split(";")) {
+			if (content.trim().startsWith("filename")) {
+				return content.substring(content.indexOf('=') + 1).trim()
+						.replace("\"", "");
+			}
+		}
+		return null;
 	}
 }

@@ -4,72 +4,85 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	template="/WEB-INF/templates/default.xhtml">
 	
 	<ui:define name="content">
-		<h:form id="mainForm" enctype="multipart/form-data" prependId="false">
-			<h:messages id="messages" errorClass="error" infoClass="info"/>
-			<fieldset>
-				<div>
-					<h:panelGrid columns="3">
-						<h:outputLabel value="File:" />
-						<h:inputFile value="#{video.file}" />
-						<h:commandButton id="uploadBtn" action="#{video.upload()}" value="Upload" />
-					</h:panelGrid>
-					
-					<h:panelGrid columns="5">
-						<h:outputLabel value="Path:" />
-						<h:inputText id="videoPath"
-									 value="#{video.video.sourceUrl}"
-									 alt="Path to your video" 
-									 size="60"
-									 required="true"
-									 requiredMessage="Enter the URL for the video that you want to convert"/>
-									 
-						<h:outputLabel value="Format:" />			 
-						<h:selectOneMenu id="videoFormat" required="true" requiredMessage="Select one format to convert your video">
-							<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
-								<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
-							</f:selectItems>
-						</h:selectOneMenu>
-						
-						<h:commandButton id="convertBtn"
-										 action="#{video.convertVideo}" 
-										 value="Convert"/>
-						
-					</h:panelGrid>
-				</div>
-			</fieldset>
+	
+		<p:dialog id="dialogUpload"
+				  widgetVar="dialogUpload"
+				  header="Upload Video"
+				  closable="true"
+				  modal="true"
+				  width="600"
+				  height="200">
+			<ui:include src="/upload.xhtml" />
+		</p:dialog>
 			
-			<fieldset style="margin-top: 20px">
-				<div>
-					<h:panelGrid columns="2">
-						<h:outputLabel value="Source URL:"/>
-						<h:outputText value="#{video.video.sourceUrl}" />
-						
-						<h:outputLabel value="Converted URL:"/>
-						<h:outputText value="#{video.video.convertedUrl}" />
-						
-						<h:outputLabel value="Format:"/>
-						<h:outputText value="#{video.video.format.name}" />
-						
-						<h:outputLabel value="Job ID:"/>
-						<h:outputText value="#{video.video.id}" />
-					</h:panelGrid>
+		<h:form id="mainForm">
+			<p:messages id="messages" errorClass="error" infoClass="info"/>
+			<div class="panel">
+				<h:panelGrid>
+					<p:commandLink value="upload a file" onclick="PF('dialogUpload').show()"/>
+				</h:panelGrid>
 					
-					<h:commandButton action="#{video.updateVideo()}" value="Update Video" />
-				</div>
-			</fieldset>
+				<h:panelGrid columns="4">
+					<p:inputText id="videoPath"
+								 value="#{video.video.sourceUrl}"
+								 alt="Path to your video" 
+								 size="50"
+								 placeholder="Enter the video URL here"/>
+					
+					<p:outputLabel value="Format:" />
+								 
+					<p:selectOneMenu id="videoFormat" required="true" requiredMessage="Select one format to convert your video">
+						<f:selectItems id="formats" itemValue="#{video.video.format}" value="#{video.videoFormatList}" var="format">
+							<f:selectItem itemLabel="#{format.name}" itemValue="#{format}"/>
+						</f:selectItems>
+					</p:selectOneMenu>
+					
+					<p:commandButton id="convertBtn"
+									 action="#{video.convertVideo}" 
+									 value="Convert"/>
+				</h:panelGrid>
+			</div>
 			
-			<fieldset>
-				<h:panelGroup id="videoPlayer" layout="block" rendered="#{not empty video.video.convertedUrl}">
-					<video id="player" width="800" height="600" autoplay="true" controls="true">
-						<source src="#{video.video.convertedUrl}" type="video/mp4">
-							Seu navegador não suporta HTML 5.
-						</source>
-					</video>
-				</h:panelGroup>
-			</fieldset>
+			<ui:remove>
+			<!-- This code is here for debuging purpose -->
+			<div class="panel">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Source URL:"/>
+					<h:outputText value="#{video.video.sourceUrl}" />
+					
+					<h:outputLabel value="Converted URL:"/>
+					<h:outputText value="#{video.video.convertedUrl}" />
+					
+					<h:outputLabel value="Format:"/>
+					<h:outputText value="#{video.video.format.name}" />
+					
+					<h:outputLabel value="Job ID:"/>
+					<h:outputText value="#{video.video.id}" />
+				</h:panelGrid>
+				
+				<h:commandButton action="#{video.updateVideo()}" value="Update Video" />
+			</div>
+			</ui:remove>
+			
+			<h:panelGroup id="videoPlayer" 
+						  layout="block" 
+						  styleClass="panel">
+						  
+				<video id="player" autoplay="true" controls="true">
+				<!-- 
+					<source src="#{video.video.convertedUrl}" type="video/mp4">
+						Seu navegador não suporta HTML 5.
+					</source>
+				 -->	
+				 <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" type="video/mp4">
+						Seu navegador não suporta HTML 5.
+					</source>
+				</video>
+			</h:panelGroup>
 		</h:form>
 	</ui:define>
 </ui:composition>
