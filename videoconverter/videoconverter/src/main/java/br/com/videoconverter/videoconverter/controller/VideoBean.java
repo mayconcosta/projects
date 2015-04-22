@@ -1,8 +1,10 @@
 package br.com.videoconverter.videoconverter.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.Part;
@@ -25,21 +27,38 @@ public class VideoBean implements Serializable {
 
 	@Inject
 	private ConverterBO converterBO;
-	
+
 	@Inject
 	private AmazonStorageService amazonStorageService;
 
 	private Video video = new Video();
 	private Part file;
 
+	/**
+	 * Método para realizar a conversão de vídeo.
+	 * @return
+	 */
 	public String convertVideo() {
 		this.setVideo(this.converterBO.convert(this.getVideo()));
-		return "player.faces?faces-redirect=true";
+		return null;
 	}
 
+	/**
+	 * Verifica se a conversão já foi finalizada e, caso afirmativo, atualiza a URL para o vídeo convertido.
+	 * @return
+	 */
 	public String updateVideo() {
-		String convertedVideoUrl = this.converterBO.getConvertedUrl(this.getVideo());
-		this.getVideo().setConvertedUrl(convertedVideoUrl);
+		try {
+			String convertedVideoUrl = this.converterBO.getConvertedUrl(this.getVideo());
+			this.getVideo().setConvertedUrl(convertedVideoUrl);
+
+			if (this.getVideo().getConvertedUrl() != null) {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("player.faces");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 
@@ -47,6 +66,10 @@ public class VideoBean implements Serializable {
 		return VideoFormat.values();
 	}
 
+	/**
+	 * Realiza o upload de um arquivo no serviço de armazenamento da Amazon.
+	 * @return
+	 */
 	public String upload() {
 		try {
 			String fileUrl = this.amazonStorageService.storeFile(file.getInputStream(), this.getFileName(file));
@@ -56,7 +79,11 @@ public class VideoBean implements Serializable {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Solicita a ação de cancelamento de um job de conversão que esteja em andamento.
+	 * @return
+	 */
 	public String cancelConversion() {
 		try {
 			this.converterBO.cancelConversion(getVideo());
@@ -81,13 +108,13 @@ public class VideoBean implements Serializable {
 	public void setVideo(Video video) {
 		this.video = video;
 	}
-	
+
 	public String reload() {
 		this.setVideo(new Video());
 		this.setFile(null);
 		return "home.faces?faces-redirect=true";
 	}
-	
+
 	private String getFileName(Part part) {
 		final String partHeader = part.getHeader("content-disposition");
 		for (String content : part.getHeader("content-disposition").split(";")) {

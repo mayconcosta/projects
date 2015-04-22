@@ -55,11 +55,19 @@
 									 value="Convert"
 									 process="@form"
 									 update="@form"
-									 onsuccess="PF('blockFields').show(); jQuery('#waitConvertionBox').css('display','block')"/>
+									 oncomplete="PF('blockFields').show(); jQuery('#waitConvertionBox').css('display','block'); PF('updatePoll').start();"
+									 />
 				</h:panelGrid>
 			</h:panelGroup>
 			
 			<p:blockUI block="fields" widgetVar="blockFields"/>
+			
+			<p:poll interval="2"
+					widgetVar="updatePoll"
+					process="@this"
+					update="@this"
+					autoStart="false" 
+					listener="#{video.updateVideo()}"/>
 			
 			<ui:remove>
 			<!-- This code is here for debuging purpose -->

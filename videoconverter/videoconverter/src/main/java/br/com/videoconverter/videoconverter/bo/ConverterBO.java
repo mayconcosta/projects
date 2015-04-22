@@ -28,8 +28,9 @@ public class ConverterBO implements Serializable {
 	
 	public Video convert(Video video) {
 		ZencoderCreateJobResponse response = this.encoderService.addVideo(video);
-		String jobId = response.getId();
-		video.setId(jobId);
+		if (response != null) {
+			video.setId(response.getId());
+		}
 		return video;
 	}
 	
@@ -45,7 +46,7 @@ public class ConverterBO implements Serializable {
 	
 	public String getConvertedUrl(Video video) {
 		ZencoderJobDetail detail = this.encoderService.getVideoInfo(video);
-		if (detail.getFinishedAt() != null) {
+		if (detail != null && detail.getFinishedAt() != null) {
 			return detail.getOutputMediaFiles().get(0).getUrl();
 		}
 		return null;

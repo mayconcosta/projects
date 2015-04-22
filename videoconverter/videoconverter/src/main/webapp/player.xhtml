@@ -16,15 +16,15 @@
 			
 			<div style="display: block" class="panel">
 				<div style="text-align: center">						  
-					<video id="player" autoplay="true" controls="true" style="margin: 0px auto; align: center">
-					<!-- 
-						<source src="#{video.video.convertedUrl}" type="video/mp4">
+					<video id="player" autoplay="true" controls="true" class="player">
+						<source src="#{video.video.convertedUrl}" type="video/#{video.video.format.name}">
 							Seu navegador não suporta HTML 5.
 						</source>
-					 -->	
+					<!-- 
 					 <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" type="video/mp4">
 							Seu navegador não suporta HTML 5.
 						</source>
+					 -->	
 					</video>
 				</div>
 			</div>

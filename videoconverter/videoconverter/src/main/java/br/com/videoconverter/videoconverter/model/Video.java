@@ -3,7 +3,6 @@ package br.com.videoconverter.videoconverter.model;
 import java.io.Serializable;
 
 
-
 public class Video implements Serializable {
 
 	private static final long serialVersionUID = 197173738576936784L;
@@ -11,7 +10,6 @@ public class Video implements Serializable {
 	private String sourceUrl;
 	private String convertedUrl;
 	private String id;
-	private String name;
 	private VideoFormat format = VideoFormat.MP4;
 	
 	public String getSourceUrl() {
@@ -44,14 +42,6 @@ public class Video implements Serializable {
 	
 	public void setId(String id) {
 		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 
 }

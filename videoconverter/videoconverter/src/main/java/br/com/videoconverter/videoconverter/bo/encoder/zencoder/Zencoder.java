@@ -13,6 +13,11 @@ import com.brightcove.zencoder.client.request.ZencoderOutput;
 import com.brightcove.zencoder.client.response.ZencoderCreateJobResponse;
 import com.brightcove.zencoder.client.response.ZencoderJobDetail;
 
+/**
+ * Classe para comunicação com o serviço de codificação de vídeo Zencoder.
+ * @author maycon
+ *
+ */
 public class Zencoder {
 
 	private static final String AMAZON_S3_BUCKET = "s3://mayconcosta";
@@ -21,9 +26,8 @@ public class Zencoder {
 
 	public ZencoderCreateJobResponse addVideo(Video video) {
 		try {
-			/**
 			ZencoderOutput output = new ZencoderOutput();
-			output.setFormat(ContainerFormat.valueOf(video.getFormat().name()));
+			output.setFormat(ContainerFormat.valueOf(video.getFormat().name().toUpperCase()));
 			output.setUrl(AMAZON_S3_BUCKET + "/" + System.currentTimeMillis() + "." + video.getFormat().getName());
 			output.setPublic(true);
 			
@@ -36,8 +40,7 @@ public class Zencoder {
 			job.setTest(true);
 			
 			ZencoderCreateJobResponse response = zencoderClient.createZencoderJob(job);
-			return response;*/
-			return null;
+			return response;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -47,7 +50,9 @@ public class Zencoder {
 
 	public Object cancelVideo(Video video) {
 		try {
-			this.zencoderClient.cancelJob(video.getId());
+			if (video.getId() != null) {
+				this.zencoderClient.cancelJob(video.getId());
+			}
 		} catch (ZencoderClientException e) {
 			e.printStackTrace();
 		}
@@ -57,8 +62,10 @@ public class Zencoder {
 	public ZencoderJobDetail getVideoInfo(Video video) {
 		try {
 			String jobId = video.getId();
-			ZencoderJobDetail details = this.zencoderClient.getZencoderJob(jobId);
-			return details;
+			if (jobId != null) {
+				return this.zencoderClient.getZencoderJob(jobId);
+				
+			}
 			
 		} catch (ZencoderClientException e) {
 			e.printStackTrace();
