@@ -38,12 +38,6 @@ public class ConverterBO implements Serializable {
 		this.encoderService.cancelVideo(video);
 	}
 	
-	public boolean isConversionComplete(Video video) {
-		ZencoderJobDetail detail = this.encoderService.getVideoInfo(video);
-		detail.getOutputMediaFiles().get(0).getUrl();
-		return detail.getFinishedAt() != null;
-	}
-	
 	public String getConvertedUrl(Video video) {
 		ZencoderJobDetail detail = this.encoderService.getVideoInfo(video);
 		if (detail != null && detail.getFinishedAt() != null) {

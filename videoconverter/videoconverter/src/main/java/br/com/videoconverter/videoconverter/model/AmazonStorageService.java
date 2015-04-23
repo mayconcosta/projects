@@ -1,7 +1,5 @@
 package br.com.videoconverter.videoconverter.model;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -26,41 +24,33 @@ public class AmazonStorageService implements Serializable {
 	private static final String BUCKET_NAME = "mayconcosta";
 	private AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
 	
-	public String storeFile(InputStream file, String name) throws StorageException {
+	public String storeFile(InputStream is, String name) throws StorageException {
+		if (is == null || name == null) {
+			throw new StorageException("File name our content can not be null");
+		}
+		
 		try {
 			String keyName = name;
 			ObjectMetadata metadata = new ObjectMetadata();
 			metadata.setHeader("x-amz-acl", "public-read");
-			PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, keyName, file, metadata);
+			PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, keyName, is, metadata);
 			PutObjectResult result = s3client.putObject(request);
 			return "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + name;
 
 		} catch (AmazonServiceException ase) {
 			System.err.println("Error Message:    " + ase.getMessage());
-			System.err.println("HTTP Status Code: " + ase.getStatusCode());
 			System.err.println("AWS Error Code:   " + ase.getErrorCode());
 			System.err.println("Error Type:       " + ase.getErrorType());
 			System.err.println("Request ID:       " + ase.getRequestId());
+			throw new StorageException(ase);
 
 		} catch (AmazonClientException ace) {
 			System.err.println("Error Message: " + ace.getMessage());
+			throw new StorageException(ace);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new StorageException(ex);
 		}
-		return null;
 	}
 	
-	public static void main(String[] args) {
-		try {
-			AmazonStorageService s3 = new AmazonStorageService();
-			File file = new File("/home/maycon/teste/test.txt");
-			InputStream is = new FileInputStream(file);
-			s3.storeFile(is, file.getName());
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }

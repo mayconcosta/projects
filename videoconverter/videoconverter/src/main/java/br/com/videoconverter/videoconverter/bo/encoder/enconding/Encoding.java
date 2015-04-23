@@ -21,6 +21,11 @@ import br.com.videoconverter.videoconverter.bo.encoder.enconding.response.GetSta
 import br.com.videoconverter.videoconverter.bo.encoder.enconding.response.Response;
 import br.com.videoconverter.videoconverter.model.Video;
 
+/**
+ * Classe para comunicação com o serviço de codificação de vídeo Enconding.
+ * @author maycon
+ *
+ */
 public class Encoding {
 
 	// TODO: Colocar essas informações em arquivo de properties.

@@ -20,10 +20,20 @@ import com.brightcove.zencoder.client.response.ZencoderJobDetail;
  */
 public class Zencoder {
 
+	/** Bucket da Amazon onde os vídeos convertidos serão armazenados. */
 	private static final String AMAZON_S3_BUCKET = "s3://mayconcosta";
+	
+	/** Chave para acesso ao serviço da Zencoder. */
 	private static final String API_KEY = "719230ea1a83818e09e08a8975a482d7";
+	
+	/** Cliente para o serviço Zencoder. */
 	private ZencoderClient zencoderClient = new ZencoderClient(API_KEY);
 
+	/**
+	 * Submete um vídeo para conversão.
+	 * @param video Objeto com informações sobre o vídeo a ser convertido.
+	 * @return
+	 */
 	public ZencoderCreateJobResponse addVideo(Video video) {
 		try {
 			ZencoderOutput output = new ZencoderOutput();
@@ -48,6 +58,11 @@ public class Zencoder {
 		return null;
 	}
 
+	/**
+	 * Cancela o job de conversão de vídeo que esteja em andamento.
+	 * @param video Video cuja conversão será cancelada.
+	 * @return
+	 */
 	public Object cancelVideo(Video video) {
 		try {
 			if (video.getId() != null) {
@@ -59,6 +74,11 @@ public class Zencoder {
 		return null;
 	}
 
+	/**
+	 * Retorna informações sobre o processo de conversão de um vídeo.
+	 * @param video
+	 * @return
+	 */
 	public ZencoderJobDetail getVideoInfo(Video video) {
 		try {
 			String jobId = video.getId();

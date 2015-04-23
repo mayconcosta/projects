@@ -44,7 +44,7 @@ public class VideoBean implements Serializable {
 	}
 
 	/**
-	 * Verifica se a conversão já foi finalizada e, caso afirmativo, atualiza a URL para o vídeo convertido.
+	 * Verifica se a conversão já foi finalizada e, caso afirmativo, redireciona para a URL do vídeo convertido.
 	 * @return
 	 */
 	public String updateVideo() {
@@ -116,11 +116,9 @@ public class VideoBean implements Serializable {
 	}
 
 	private String getFileName(Part part) {
-		final String partHeader = part.getHeader("content-disposition");
 		for (String content : part.getHeader("content-disposition").split(";")) {
 			if (content.trim().startsWith("filename")) {
-				return content.substring(content.indexOf('=') + 1).trim()
-						.replace("\"", "");
+				return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
 			}
 		}
 		return null;
