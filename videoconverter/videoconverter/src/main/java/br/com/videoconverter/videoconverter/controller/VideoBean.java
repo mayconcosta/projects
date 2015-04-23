@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,7 +41,12 @@ public class VideoBean implements Serializable {
 	 * @return
 	 */
 	public String convertVideo() {
-		this.setVideo(this.converterBO.convert(this.getVideo()));
+		try {
+			this.setVideo(this.converterBO.convert(this.getVideo()));
+		} catch (Exception ex) {
+			showErrorMessage("Could not convert your video. Contat the administrator.");
+			ex.printStackTrace();
+		}
 		return null;
 	}
 
@@ -72,9 +79,12 @@ public class VideoBean implements Serializable {
 	 */
 	public String upload() {
 		try {
-			String fileUrl = this.amazonStorageService.storeFile(file.getInputStream(), this.getFileName(file));
-			this.getVideo().setSourceUrl(fileUrl);
+			if (getFile() != null) {
+				String fileUrl = this.amazonStorageService.storeFile(getFile().getInputStream(), this.getFileName(getFile()));
+				this.getVideo().setSourceUrl(fileUrl);
+			}
 		} catch (Exception e) {
+			this.showErrorMessage("Could not upload your file. Contat the administrator");
 			e.printStackTrace();
 		}
 		return null;
@@ -88,6 +98,7 @@ public class VideoBean implements Serializable {
 		try {
 			this.converterBO.cancelConversion(getVideo());
 		} catch (Exception ex) {
+			this.showErrorMessage("Could not cancel the conversion. Contat the administrator");
 			ex.printStackTrace();
 		}
 		return this.reload();
@@ -122,5 +133,9 @@ public class VideoBean implements Serializable {
 			}
 		}
 		return null;
+	}
+	
+	private void showErrorMessage(String message) {
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
 	}
 }

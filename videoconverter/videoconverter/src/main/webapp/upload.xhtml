@@ -13,7 +13,9 @@
 		<h:inputFile id="file"
 					 value="#{video.file}" 
 					 label="Choose your file"
-					 onclick="jQuery('#waitMessageContent').css('display', 'none')"/>
+					 onclick="jQuery('#waitMessageContent').css('display', 'none')"
+					 required="true"
+					 requiredMessage="Select a video to upload."/>
 						
 		<h:commandButton id="uploadBtn" 
 						 value="Upload"
